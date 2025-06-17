@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Pares Terapêutico</title>
+    <title>Pareamento ABAplay</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,6 @@
 <body>
 
     <div class="game-container">
-        <!-- O HUD é movido para o topo para melhor visualização -->
         <div id="hud">
             <div class="hud-item">
                 <span>Pares Encontrados</span>
@@ -20,12 +19,11 @@
             </div>
         </div>
 
-        <!-- O tabuleiro do jogo onde as cartas serão inseridas -->
+        <!-- O tabuleiro do jogo com a nova estrutura de grade -->
         <div id="game-board"></div>
     </div>
 
 
-    <!-- Tela de resultados, inicialmente oculta -->
     <div id="results-screen" class="hidden">
         <div class="results-box">
             <h2>🎉 Muito Bem! 🎉</h2>
@@ -36,7 +34,6 @@
         </div>
     </div>
     
-    <!-- O script principal do nosso jogo -->
     <script src="main.js"></script>
 </body>
 </html>

@@ -4,15 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // CONFIGURAÇÕES E CONSTANTES DO JOGO
     // =========================================================================
     
-    // ATENÇÃO, DESENVOLVEDOR JÚNIOR:
-    // Para adicionar novos pares, adicione um novo array aqui.
-    // O primeiro item é o NOME do par (para identificação), e os dois
-    // seguintes são os nomes dos arquivos de imagem na pasta 'assets/images/'.
     const paresDeImagens = [
         ['utensilios', 'garfo.png', 'prato.png'],
         ['vestuario', 'sapato.png', 'meia.png'],
         ['escolar', 'lapis.png', 'caderno.png'],
-        ['bebida', 'xicara.png', 'cafe.png'], // Ajustado para corresponder às imagens
+        ['bebida', 'xicara.png', 'cafe.png'],
         ['ferramentas', 'martelo.png', 'prego.png'],
         ['seguranca', 'chave.png', 'cadeado.png']
     ];
@@ -21,8 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
     const scoreEl = document.getElementById('score');
     const totalPairsEl = document.getElementById('total-pairs');
-    
-    // Elementos da tela de resultados
     const resultsScreenEl = document.getElementById('results-screen');
     const totalAttemptsEl = document.getElementById('total-attempts');
     const correctMatchesEl = document.getElementById('correct-matches');
@@ -30,143 +24,113 @@ document.addEventListener('DOMContentLoaded', () => {
     const playAgainBtn = document.getElementById('play-again-btn');
 
     // Variáveis de estado do jogo
-    let cartas = []; // Array que guardará os elementos das cartas
     let primeiraCarta, segundaCarta;
-    let tabuleiroBloqueado = false; // Impede cliques durante animações
-    let dadosPartida = {
-        acertos: 0,
-        tentativas: 0
-    };
+    let tabuleiroBloqueado = false;
+    let dadosPartida = { acertos: 0, tentativas: 0 };
 
     // =========================================================================
     // FUNÇÕES PRINCIPAIS DO JOGO
     // =========================================================================
 
-    /**
-     * Inicia o jogo, criando e embaralhando as cartas.
-     */
     function iniciarJogo() {
-        // Reseta o estado
         resetarEstado();
 
-        // Cria a lista de todas as imagens que estarão no tabuleiro
         const imagensDoJogo = [];
         paresDeImagens.forEach(par => {
-            // Adiciona as duas imagens do par, com seu identificador
             imagensDoJogo.push({ id: par[0], src: par[1] });
             imagensDoJogo.push({ id: par[0], src: par[2] });
         });
 
-        // Embaralha o array de imagens
         embaralharArray(imagensDoJogo);
 
-        // Cria o HTML para cada carta e adiciona ao tabuleiro
         imagensDoJogo.forEach(item => {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
-            cardElement.dataset.pairId = item.id; // Atributo para identificar o par
+            cardElement.dataset.pairId = item.id;
 
-            // *** CORREÇÃO APLICADA AQUI ***
-            // O caminho da imagem agora aponta para a pasta correta.
+            // Todas as cartas começam visíveis
             cardElement.innerHTML = `
-                <div class="card-face card-front">
-                    <img src="assets/images/${item.src}" alt="${item.id}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFF/333?text=Erro';">
-                </div>
-                <div class="card-face card-back">?</div>
+                <img src="assets/images/${item.src}" alt="${item.id}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFF/333?text=Erro';">
             `;
             
+            cardElement.addEventListener('click', selecionarCarta);
             gameBoard.appendChild(cardElement);
-            cartas.push(cardElement); // Guarda a referência da carta
         });
-
-        // Adiciona o listener de clique para cada carta
-        cartas.forEach(carta => carta.addEventListener('click', virarCarta));
     }
 
     /**
-     * Lida com o clique em uma carta.
+     * Lógica para selecionar uma carta (não mais 'virar').
      */
-    function virarCarta() {
-        // Se o tabuleiro estiver bloqueado ou a carta já foi clicada/combinada, ignora
-        if (tabuleiroBloqueado || this === primeiraCarta || this.classList.contains('matched')) return;
+    function selecionarCarta() {
+        if (tabuleiroBloqueado || this.classList.contains('matched')) return;
 
-        this.classList.add('flipped');
+        // Impede que a mesma carta seja selecionada duas vezes
+        if (this === primeiraCarta) return;
+
+        this.classList.add('selected');
 
         if (!primeiraCarta) {
-            // Se é a primeira carta da jogada
             primeiraCarta = this;
             return;
         }
 
-        // Se é a segunda carta da jogada
         segundaCarta = this;
-        tabuleiroBloqueado = true; // Bloqueia o tabuleiro para evitar mais cliques
+        tabuleiroBloqueado = true;
         dadosPartida.tentativas++;
 
         verificarPar();
     }
 
-    /**
-     * Verifica se as duas cartas viradas formam um par.
-     */
     function verificarPar() {
         const ehPar = primeiraCarta.dataset.pairId === segundaCarta.dataset.pairId;
 
         if (ehPar) {
-            // Se formam um par
-            dadosPartida.acertos++;
-            scoreEl.textContent = dadosPartida.acertos;
-            desabilitarCartas();
-            verificarFimDeJogo();
+            processarAcerto();
         } else {
-            // Se não formam um par
-            desvirarCartas();
+            processarErro();
         }
     }
 
     /**
-     * Remove os listeners e marca as cartas como combinadas.
+     * Processa o acerto de um par.
      */
-    function desabilitarCartas() {
-        primeiraCarta.removeEventListener('click', virarCarta);
-        segundaCarta.removeEventListener('click', virarCarta);
+    function processarAcerto() {
+        dadosPartida.acertos++;
+        scoreEl.textContent = dadosPartida.acertos;
 
-        // Adiciona a classe de sucesso para a animação de desaparecer
+        // Adiciona a classe para a animação de sucesso
         primeiraCarta.classList.add('matched');
         segundaCarta.classList.add('matched');
 
+        // Remove a capacidade de clicar novamente nessas cartas
+        primeiraCarta.removeEventListener('click', selecionarCarta);
+        segundaCarta.removeEventListener('click', selecionarCarta);
+        
         resetarJogada();
+        verificarFimDeJogo();
     }
 
     /**
-     * Vira as cartas de volta se elas não formarem um par.
+     * Processa o erro de um par.
      */
-    function desvirarCartas() {
-        // Adiciona a animação de "tremer"
+    function processarErro() {
         primeiraCarta.classList.add('shake');
         segundaCarta.classList.add('shake');
 
-        // Após um tempo, remove as classes para virar de volta e parar de tremer
+        // Após um tempo, remove as classes de feedback visual
         setTimeout(() => {
-            primeiraCarta.classList.remove('flipped', 'shake');
-            segundaCarta.classList.remove('flipped', 'shake');
+            primeiraCarta.classList.remove('selected', 'shake');
+            segundaCarta.classList.remove('selected', 'shake');
             resetarJogada();
-        }, 1200); // Tempo para o jogador ver as duas cartas e a animação
+        }, 1000);
     }
-
-    /**
-     * Verifica se o jogo terminou.
-     */
+    
     function verificarFimDeJogo() {
         if (dadosPartida.acertos === paresDeImagens.length) {
-            // Atraso para a última animação de acerto terminar
             setTimeout(mostrarResultados, 1000);
         }
     }
 
-    /**
-     * Mostra a tela de resultados finais.
-     */
     function mostrarResultados() {
         totalAttemptsEl.textContent = dadosPartida.tentativas;
         correctMatchesEl.textContent = dadosPartida.acertos;
@@ -178,31 +142,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // FUNÇÕES UTILITÁRIAS
     // =========================================================================
 
-    /**
-     * Reseta as variáveis de uma jogada.
-     */
     function resetarJogada() {
         [primeiraCarta, segundaCarta] = [null, null];
         tabuleiroBloqueado = false;
     }
 
-    /**
-     * Limpa o tabuleiro e reseta o estado do jogo para uma nova partida.
-     */
     function resetarEstado() {
         gameBoard.innerHTML = '';
         resultsScreenEl.classList.add('hidden');
-        cartas = [];
         dadosPartida = { acertos: 0, tentativas: 0 };
         scoreEl.textContent = '0';
         totalPairsEl.textContent = paresDeImagens.length;
         resetarJogada();
     }
     
-    /**
-     * Embaralha os elementos de um array (algoritmo Fisher-Yates).
-     * @param {Array} array - O array a ser embaralhado.
-     */
     function embaralharArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -210,10 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Listener para o botão de jogar novamente
     playAgainBtn.addEventListener('click', iniciarJogo);
-
-    // Inicia o jogo pela primeira vez
     iniciarJogo();
 
 });
