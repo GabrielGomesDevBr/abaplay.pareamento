@@ -31,7 +31,6 @@ body, html {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Efeito de brilho no fundo para atmosfera premium */
 .background-glow {
     position: absolute;
     top: 50%;
@@ -45,14 +44,13 @@ body, html {
     pointer-events: none;
 }
 
-/* O Palco Central: onde o jogo acontece */
 .stage {
     position: relative;
     width: 95%;
     height: 95%;
     max-width: 1000px;
     max-height: 800px;
-    background-color: rgba(248, 249, 250, 0.95); /* Cor --brand-bg com transparência */
+    background-color: rgba(248, 249, 250, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -60,6 +58,7 @@ body, html {
     flex-direction: column;
     padding: 25px;
     color: var(--brand-dark);
+    transition: all 0.3s ease;
 }
 
 .brand-header { text-align: center; }
@@ -68,7 +67,7 @@ body, html {
 .brand-footer {
     text-align: center;
     font-size: 0.8rem;
-    color: #9ca3af; /* --brand-muted */
+    color: #9ca3af;
     padding-top: 15px;
 }
 
@@ -82,12 +81,10 @@ body, html {
     width: 100%;
 }
 
-/* HUD (Pontuação) com visual integrado */
 #hud { text-align: center; }
 .hud-item span { font-size: 0.9rem; color: #6b7280; }
 .hud-item p { font-family: var(--font-heading); font-weight: 600; font-size: 2rem; margin: 2px 0 0 0; color: var(--brand-dark); }
 
-/* Tabuleiro do Jogo com efeito de vidro */
 #game-board {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -95,12 +92,11 @@ body, html {
     background-color: rgba(255, 255, 255, 0.7);
     padding: var(--gap-size);
     border-radius: var(--border-radius);
-    border: 1px solid rgba(229, 231, 235, 0.8); /* --brand-stroke */
+    border: 1px solid rgba(229, 231, 235, 0.8);
     backdrop-filter: blur(10px);
     box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
-/* Estilo individual e refinado da Carta */
 .card {
     width: var(--card-size);
     height: var(--card-size);
@@ -118,7 +114,6 @@ body, html {
 .card:hover { transform: scale(1.05) translateY(-4px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); }
 .card img { width: 70%; height: 70%; object-fit: contain; pointer-events: none; }
 
-/* --- Estados e Animações da Carta --- */
 .card.selected {
     border-color: var(--brand-accent);
     transform: scale(1.08) translateY(-2px);
@@ -137,69 +132,78 @@ body, html {
     75% { transform: translateX(8px); }
 }
 
-/* Tela de Resultados com o mesmo padrão visual (CÓDIGO CORRIGIDO) */
 #results-screen { 
-    position: fixed; 
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(13, 17, 23, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    backdrop-filter: blur(8px);
-    animation: fadeIn 0.5s ease-in-out;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(13, 17, 23, 0.7); display: flex; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(8px); animation: fadeIn 0.5s ease-in-out;
 }
-
 .results-box {
-    background-color: var(--brand-light);
-    border: 1px solid var(--brand-stroke);
-    border-radius: 20px;
-    color: var(--brand-dark);
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 450px;
+    background-color: var(--brand-light); border: 1px solid var(--brand-stroke); border-radius: 20px; color: var(--brand-dark); padding: 40px; text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); width: 90%; max-width: 450px;
 }
-
 .results-box h2 { font-family: var(--font-heading); margin-top: 0; margin-bottom: 25px; font-size: 2.2em; }
 .results-box p { font-size: 1.1em; color: #374151; margin: 15px 0; }
 .results-box p strong { color: var(--brand-dark); }
-
 #play-again-btn { 
-    font-family: var(--font-heading);
-    margin-top: 25px;
-    padding: 14px 30px;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--brand-light);
-    background-color: var(--brand-dark);
-    border: none;
-    border-radius: 99px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    font-family: var(--font-heading); margin-top: 25px; padding: 14px 30px; font-size: 1.1em; font-weight: 600; color: var(--brand-light); background-color: var(--brand-dark); border: none; border-radius: 99px; cursor: pointer; transition: all 0.3s ease;
 }
 #play-again-btn:hover { background-color: #000; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.hidden { display: none !important; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-.hidden { 
-    display: none !important;
-}
+/* --- Media Queries para Responsividade Profissional --- */
 
-@keyframes fadeIn { 
-    from { opacity: 0; transform: scale(0.95); } 
-    to { opacity: 1; transform: scale(1); } 
-}
-
-
-/* --- Media Queries para Responsividade --- */
+/* 1. Telas de Tablet (ex: iPads em modo retrato) */
 @media (max-width: 820px) {
     .stage { padding: 20px; }
-    #game-board { grid-template-columns: repeat(3, 1fr); }
+    #game-board { 
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 90%;
+    }
 }
+
+/* 2. Telas de Celular - Modo Retrato (Portrait) */
 @media (max-width: 600px) {
-    .stage { border-radius: 0; width: 100%; height: 100%; max-height: none; }
-    #game-board { grid-template-columns: repeat(2, 1fr); }
+    body {
+        /* Permite rolagem se o conteúdo exceder a altura */
+        overflow-y: auto; 
+    }
+    .stage { 
+        /* Ocupa a tela inteira, mas com padding para não colar nas bordas */
+        border-radius: 0; 
+        width: 100%; 
+        height: auto; /* Altura automática para se ajustar ao conteúdo */
+        min-height: 100%;
+        max-height: none; 
+        padding: 20px 15px;
+    }
+    #game-board { 
+        /* 2 colunas é ideal para usabilidade em telas verticais */
+        grid-template-columns: repeat(2, 1fr); 
+    }
+    .hud-item p { font-size: 1.8rem; }
+}
+
+/* 3. Telas de Celular - Modo Paisagem (Landscape) */
+@media (max-height: 500px) and (orientation: landscape) {
+    body {
+        align-items: flex-start; /* Alinha o palco no topo */
+        overflow-y: auto; /* Permite rolar o palco */
+    }
+    .stage {
+        height: auto; /* Altura se ajusta ao conteúdo */
+        margin: 20px 0; /* Margem para não colar no topo/fundo */
+    }
+    .game-container {
+        flex-direction: row; /* Coloca HUD e Tabuleiro lado a lado */
+        align-items: center;
+        gap: 30px;
+    }
+    #game-board {
+        /* Reorganiza o grid para um formato mais horizontal */
+        grid-template-columns: repeat(4, 1fr);
+        /* Reduz o padding para ganhar espaço */
+        padding: 12px;
+    }
+    .brand-footer {
+        /* Esconde o footer para maximizar o espaço para o jogo */
+        display: none;
+    }
 }
