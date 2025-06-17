@@ -1,25 +1,27 @@
 /* Estilos gerais e reset */
 :root {
-    --card-size: clamp(100px, 15vw, 150px); /* Tamanho responsivo das cartas */
-    --gap-size: 20px;
+    /* Variáveis para fácil customização */
+    --card-size: clamp(80px, 20vw, 150px); /* Tamanho da carta se ajusta ao viewport */
+    --gap-size: clamp(10px, 3vw, 20px);  /* Espaçamento se ajusta ao viewport */
     --primary-color: #007bff;
     --success-color: #28a745;
     --danger-color: #dc3545;
     --light-blue-bg: #f0f8ff;
+    --border-radius: 15px;
 }
 
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    min-height: 100%; /* Garante que o corpo ocupe pelo menos a altura da tela */
     font-family: 'Poppins', sans-serif;
     background-color: var(--light-blue-bg);
     color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .game-container {
@@ -28,6 +30,7 @@ body, html {
     align-items: center;
     gap: 20px;
     width: 100%;
+    max-width: 1200px; /* Limite para telas muito grandes */
     height: 100%;
     padding: 20px;
     box-sizing: border-box;
@@ -37,19 +40,24 @@ body, html {
 #hud {
     background-color: rgba(255, 255, 255, 0.95);
     padding: 10px 25px;
-    border-radius: 20px;
+    border-radius: var(--border-radius);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0; /* Impede que o HUD encolha */
 }
 
-.hud-item span { font-weight: 400; font-size: 1.1em; }
+.hud-item span { font-size: 1.1em; }
 .hud-item p { font-weight: 700; font-size: 2em; margin: 5px 0 0 0; color: var(--primary-color); text-align: center; }
 
-/* Tabuleiro do Jogo em Grade 4x3 */
+/* Tabuleiro do Jogo - Layout Base para Desktop */
 #game-board {
     display: grid;
+    /* 4 colunas para telas largas */
     grid-template-columns: repeat(4, 1fr);
     gap: var(--gap-size);
     padding: 10px;
+    width: 100%;
+    max-width: 800px; /* Limita a largura do tabuleiro */
+    margin: auto; /* Centraliza o tabuleiro */
 }
 
 /* Estilo individual da Carta */
@@ -57,14 +65,15 @@ body, html {
     width: var(--card-size);
     height: var(--card-size);
     background-color: #fff;
-    border-radius: 15px;
+    border-radius: var(--border-radius);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border: 5px solid transparent; /* Borda para feedback de seleção */
-    transition: transform 0.2s ease-in-out, border-color 0.2s;
+    border: 5px solid transparent;
+    transition: transform 0.2s ease-in-out, border-color 0.2s, background-color 0.2s;
+    -webkit-tap-highlight-color: transparent; /* Remove o destaque de toque em mobile */
 }
 
 .card:hover {
@@ -74,48 +83,66 @@ body, html {
 .card img {
     width: 80%;
     height: 80%;
-    object-fit: contain; /* Garante que a imagem caiba sem distorcer */
-    pointer-events: none; /* Impede que a imagem intercepte o clique da carta */
+    object-fit: contain;
+    pointer-events: none;
 }
 
-/* -- Estados e Animações da Carta -- */
-
-/* Carta selecionada pelo jogador */
-.card.selected {
-    border-color: var(--primary-color);
-    transform: scale(1.08);
-}
-
-/* Animação para um par CORRETO */
-.card.matched {
-    animation: success-anim 0.8s ease-in-out forwards;
-}
+/* --- Estados e Animações da Carta --- */
+.card.selected { border-color: var(--primary-color); transform: scale(1.08); }
+.card.matched { animation: success-anim 0.8s ease-in-out forwards; }
+.card.shake { animation: shake-anim 0.5s ease-in-out; border-color: var(--danger-color); }
 
 @keyframes success-anim {
     0% { transform: scale(1); background-color: #fff; }
     50% { transform: scale(1.1); background-color: #d4edda; border-color: var(--success-color); }
     100% { transform: scale(0); opacity: 0; }
 }
-
-/* Animação para um par INCORRETO */
-.card.shake {
-    animation: shake-anim 0.5s ease-in-out;
-    border-color: var(--danger-color);
-}
-
 @keyframes shake-anim {
     0%, 100% { transform: translateX(0); }
     20%, 60% { transform: translateX(-10px); }
     40%, 80% { transform: translateX(10px); }
 }
 
-/* Tela de Resultados (sem alterações) */
-#results-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+/* --- Media Queries para Responsividade --- */
+
+/* Telas de Tablet (ex: iPads em modo retrato) */
+@media (max-width: 820px) {
+    #game-board {
+        /* Muda para 3 colunas */
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 600px;
+    }
+}
+
+/* Telas de Celular (grandes e pequenos) */
+@media (max-width: 600px) {
+    body {
+        /* Permite rolagem vertical se necessário em telas pequenas */
+        overflow-y: auto; 
+        align-items: flex-start; /* Alinha o conteúdo no topo */
+        padding-top: 20px;
+    }
+
+    #game-board {
+        /* Muda para 2 colunas, ideal para visualização vertical */
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 380px;
+    }
+
+    .hud-item span { font-size: 1em; }
+    .hud-item p { font-size: 1.8em; }
+
+    .results-box {
+        padding: 25px;
+    }
+    .results-box h2 { font-size: 2em; }
+    .results-box p { font-size: 1.1em; }
+    #play-again-btn { font-size: 1em; padding: 12px 25px; }
+}
+
+
+/* Tela de Resultados (sem alterações de lógica, apenas responsividade) */
+#results-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
 .results-box { background-color: white; padding: 40px 50px; border-radius: 25px; text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); animation: fadeIn 0.5s ease-in-out; width: 90%; max-width: 450px; }
-.results-box h2 { margin-top: 0; margin-bottom: 25px; color: var(--success-color); font-size: 2.5em; }
-.results-box p { font-size: 1.3em; color: #555; margin: 18px 0; }
-.results-box p strong { color: #333; }
-#play-again-btn { margin-top: 25px; padding: 15px 30px; font-size: 1.2em; font-weight: 700; color: white; background-image: linear-gradient(45deg, #007bff, #0056b3); border: none; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); }
-#play-again-btn:hover, #play-again-btn:focus { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4); outline: none; }
 .hidden { display: none !important; }
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
