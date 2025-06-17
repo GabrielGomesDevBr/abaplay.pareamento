@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Pares Terapêutico</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- O HUD é movido para o topo para melhor visualização -->
+        <div id="hud">
+            <div class="hud-item">
+                <span>Pares Encontrados</span>
+                <p><span id="score">0</span> / <span id="total-pairs"></span></p>
+            </div>
+        </div>
+
+        <!-- O tabuleiro do jogo onde as cartas serão inseridas -->
+        <div id="game-board"></div>
+    </div>
+
+
+    <!-- Tela de resultados, inicialmente oculta -->
+    <div id="results-screen" class="hidden">
+        <div class="results-box">
+            <h2>🎉 Muito Bem! 🎉</h2>
+            <p><strong>Tentativas Totais:</strong> <span id="total-attempts">0</span></p>
+            <p><strong>Acertos:</strong> <span id="correct-matches">0</span></p>
+            <p><strong>Erros:</strong> <span id="wrong-matches">0</span></p>
+            <button id="play-again-btn">Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <!-- O script principal do nosso jogo -->
+    <script src="main.js"></script>
+</body>
+</html>

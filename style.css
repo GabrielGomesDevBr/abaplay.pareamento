@@ -1,0 +1,171 @@
+/* Estilos gerais e reset */
+:root {
+    --card-size: clamp(80px, 15vw, 140px); /* Tamanho responsivo das cartas */
+    --gap-size: 15px;
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --light-blue-bg: #f0f8ff;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-blue-bg);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* HUD (Pontuação) */
+#hud {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.hud-item span {
+    font-weight: 400;
+    font-size: 1.1em;
+}
+
+.hud-item p {
+    font-weight: 700;
+    font-size: 2em;
+    margin: 5px 0 0 0;
+    color: var(--primary-color);
+}
+
+/* Tabuleiro do Jogo */
+#game-board {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    gap: var(--gap-size);
+    perspective: 1000px; /* Necessário para a animação 3D de virar a carta */
+    max-width: 800px;
+}
+
+/* Estilo individual da Carta */
+.card {
+    width: var(--card-size);
+    height: var(--card-size);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s;
+    transform-style: preserve-3d;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Garante que a imagem caiba sem distorcer */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.card .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Esconde o lado de trás da face */
+    transition: transform 0.6s;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card .card-back {
+    /* O verso da carta, com um ícone de interrogação */
+    background-color: var(--primary-color);
+    color: white;
+    font-size: calc(var(--card-size) * 0.5);
+    font-weight: 700;
+}
+
+.card .card-front {
+    /* A frente da carta, onde a imagem aparece */
+    transform: rotateY(180deg);
+}
+
+/* Estados e Animações da Carta */
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card.matched {
+    /* Animação de acerto: aumenta e some */
+    animation: success-anim 0.8s ease-in-out forwards;
+}
+
+@keyframes success-anim {
+    0% { transform: rotateY(180deg) scale(1); }
+    50% { transform: rotateY(180deg) scale(1.2); }
+    100% { transform: rotateY(180deg) scale(0); opacity: 0; }
+}
+
+.card.shake {
+    /* Animação de erro: treme */
+    animation: shake-anim 0.5s ease-in-out;
+}
+
+@keyframes shake-anim {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    20%, 60% { transform: rotateY(180deg) translateX(-8px); }
+    40%, 80% { transform: rotateY(180deg) translateX(8px); }
+}
+
+
+/* Tela de Resultados (mesma da versão anterior, já era boa) */
+#results-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(5px);
+}
+.results-box {
+    background-color: white;
+    padding: 40px 50px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease-in-out;
+    width: 90%;
+    max-width: 450px;
+}
+.results-box h2 { margin-top: 0; margin-bottom: 25px; color: var(--success-color); font-size: 2.5em; }
+.results-box p { font-size: 1.3em; color: #555; margin: 18px 0; }
+.results-box p strong { color: #333; }
+#play-again-btn { margin-top: 25px; padding: 15px 30px; font-size: 1.2em; font-weight: 700; color: white; background-image: linear-gradient(45deg, #007bff, #0056b3); border: none; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); }
+#play-again-btn:hover, #play-again-btn:focus { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4); outline: none; }
+.hidden { display: none !important; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
